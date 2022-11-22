@@ -12,9 +12,4 @@ const connect = async () => {
     }
 }
 
-// let clientPromise;
-
-// client = new MongoClient(uri, {});
-// clientPromise = client.connect();
-
 export { connect, client };

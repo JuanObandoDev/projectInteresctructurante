@@ -1,28 +1,42 @@
-import { Timestamp } from "mongodb";
 import { connect, client } from "./conn.js";
 import { ObjectId } from 'mongodb';
 
-async function getAllUsers() {
+const getAllUsers = async () => {
     try {
         await connect();
         const users = await client.db("project").collection("users").find({}).toArray();
-        return users;
+        const usersWithoutPassword = users.map(user => {
+            delete user.password;
+            return user;
+        });
+        return usersWithoutPassword;
     } catch (error) {
         throw new Error(error);
     }
 }
 
-async function getUserById(id) {
+const getUserById = async (id) => {
     try {
         await connect();
         const user = await client.db("project").collection("users").findOne({ _id: new ObjectId(id) });
+        delete user.password;
         return user;
     } catch (error) {
         throw new Error("Error getting user");
     }
 }
 
-async function getQuestions() {
+const getUserByEmail = async (email) => {
+    try {
+        await connect();
+        const user = await client.db("project").collection("users").findOne({ email: email });
+        return user;
+    } catch (error) {
+        throw new Error("Error getting user");
+    }
+}
+
+const getQuestions = async () => {
     try {
         await connect();
         const questions = await client.db("project").collection("questions").find({}).toArray();
@@ -32,7 +46,7 @@ async function getQuestions() {
     }
 }
 
-async function getAnswersByUserId(id) {
+const getAnswersByUserId = async (id) => {
     try {
         await connect();
         const answers = await client.db("project").collection("answers").find({ userId: id }).toArray();
@@ -42,7 +56,7 @@ async function getAnswersByUserId(id) {
     }
 }
 
-async function getAnswersByQuestionId(id) {
+const getAnswersByQuestionId = async (id) => {
     try {
         await connect();
         const answers = await client.db("project").collection("answers").find({ questionId: id }).toArray();
@@ -52,7 +66,7 @@ async function getAnswersByQuestionId(id) {
     }
 }
 
-async function postAnswer(answer) {
+const postAnswer = async (answer) => {
     try {
         await connect();
         const newAnswer = await client.db("project").collection("answers").insertOne(answer);
@@ -62,7 +76,7 @@ async function postAnswer(answer) {
     }
 }
 
-async function postUser(user) {
+const postUser = async (user) => {
     try {
         await connect();
         const result = await client.db("project").collection("users").insertOne(user);
@@ -72,7 +86,7 @@ async function postUser(user) {
     }
 }
 
-async function putUser(id, user) {
+const putUser = async (id, user) => {
     try {
         await connect();
         const result = await client.db("project").collection("users").updateOne({ _id: new ObjectId(id) }, { $set: user });
@@ -82,7 +96,7 @@ async function putUser(id, user) {
     }
 }
 
-async function deleteUser(id) {
+const deleteUser = async (id) => {
     try {
         await connect();
         const result = await client.db("project").collection("users").deleteOne({ _id: new ObjectId(id) });
@@ -92,23 +106,4 @@ async function deleteUser(id) {
     }
 }
 
-// class Database {
-//     constructor() {
-//         if(typeof Database.instance === 'object') {
-//             return Database.instance;
-//         }
-//         Database.instance = this;
-//         return this;
-//     }
-
-//     async connect() {
-//         console.log(this.client)
-//         if(!this.client?.isConected()) {       
-//             this.client = await ClientP;
-//             console.log("hola");
-//         }
-//         this.db = this.client.db("project");
-//     }
-// }
-
-export { connect, getAllUsers, getUserById, getQuestions, getAnswersByUserId, getAnswersByQuestionId, postAnswer, postUser, putUser, deleteUser };
+export { connect, getAllUsers, getUserById, getUserByEmail, getQuestions, getAnswersByUserId, getAnswersByQuestionId, postAnswer, postUser, putUser, deleteUser };
