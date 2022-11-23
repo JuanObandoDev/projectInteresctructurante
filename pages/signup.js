@@ -105,7 +105,6 @@ export default function Login() {
             <input
               className={styles.input3}
               type="checkbox"
-              required
               value={form.anonymous}
               onChange={(e) => {
                 setForm({ ...form, anonymous: e.target.value });
