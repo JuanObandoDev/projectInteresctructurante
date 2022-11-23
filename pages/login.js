@@ -79,7 +79,7 @@ export default function Login() {
             />
             <button className={styles.button1}>Log In</button>
             <p className={styles.p}>
-              Don't have an account?{" "}
+              Don{"'"}t have an account?{" "}
               <Link href="/signup" className={styles.link}>
                 Sign Up
               </Link>
